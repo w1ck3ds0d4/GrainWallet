@@ -1,6 +1,3 @@
-# Version worktrees (each version of GrainWallet is checked out via `git worktree add vN vN` into a vN/ subfolder; ignore them on the hub branch).
-/v[0-9]*/
-
 # Build output
 bin/
 obj/
