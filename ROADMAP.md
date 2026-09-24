@@ -1,68 +1,36 @@
-# GrainWallet v1 Roadmap
+# Roadmap
 
-## What v1 is
+**Status:** release: path to v1.0.0. **Last reviewed:** 2026-09-24.
 
-A side-by-side comparison harness for the per-player wallet microservice across
-versions: `main` ships the Dashboard hub, each numbered version (`v1/`, `v2/`,
-...) lives as a committed source tree, and the Dashboard runs NBomber against
-all of them in parallel and renders the latency comparison.
+GrainWallet is a finished comparison harness (hub layout, v1 and v2 source trees, a working
+NBomber dashboard) built as an interview/portfolio artifact, not a live product. "Done" means a
+tagged, documented `v1.0.0` that a stranger can clone and run in one sitting, after which it moves
+to maintain.
 
-## Current state
+> How this file is used: Claude Project threads build the first unticked item under **Now**, one item per branch and pull request, and tick it in that same PR as `- [x] ... (#PR)`. Daniel owns the order and the lists; threads never add to Now, Next or Later themselves, they propose under **Ideas**.
 
-The hub layout landed: `main` carries the Dashboard, the v1 and v2 service
-trees are committed under `v1/` and `v2/`, the Compare compound boots both
-stacks plus the Dashboard end-to-end, and CI gates the hub (format + build).
-Each version subfolder carries its own AppHost, Postgres + Kafka via Aspire,
-test suite, and load harness.
+## Now (path to v1.0.0)
+- [ ] **Smoke test the Compare flow on a clean machine**: fresh clone into a scratch directory, run the `Compare: v1 + v2 + Dashboard` compound, confirm v1 binds `:5000`, v2 binds `:5001`, Dashboard binds `:5100`, and each benchmark (`add-funds`, `deduct-funds`, `get-balance`) renders side-by-side cards. Done when: zero manual steps beyond `git clone` and the compound launch, and a screenshot is captured for the README.
+- [ ] **README first-time-cloner walkthrough**: add the captured screenshot and confirm the existing run steps are enough with no tribal knowledge. Done when: someone who has never seen the repo can go from clone to a rendered comparison using only the README.
+- [ ] **Reviewer-facing diff badge**: a "v1 vs v2 delta" tile on the Dashboard highlighting p95/p99 deltas as `+X% faster` / `-X% slower`, computed from in-memory `NodeStats`, plus v2's back-pressure 503 rate (invisible today). Done when: a reviewer can open the dashboard, click Run, and state v2's wins without reading raw numbers.
+- [ ] **Tag v1.0.0**: bump the Dashboard `.csproj` to an informational 1.0.0 marker, push tag `v1.0.0` on the smoke-tested commit, and cut a GitHub release with the README's run steps in the notes. Done when: `git tag --list` shows `v1.0.0` and a GitHub release exists for it.
 
-## v1 acceptance criteria
+## Next
+- [ ] **Per-version README linkbacks**: link `v1/README.md` and `v2/README.md` from the hub README so a reader can go straight to either version's own docs. Done when: both links resolve from the hub README.
+- [ ] **Move to maintain**: after the tag, this repo needs no further roadmap cadence; keep CI green and Dependabot patched only.
 
-- [x] Hub identity (Dashboard-only `main`, vN/ source trees, single clone)
-- [x] `Compare: v1 + v2 + Dashboard` compound works end-to-end
+## Later
+- Adding v3 as the same committed-subfolder pattern, once a v3 branch exists.
+- Charts in the Dashboard: per-scenario latency lines over benchmark history.
+- Dashboard config UI for adjusting bench knobs without restarting.
+
+## Ideas
+(empty to start; threads add proposals here)
+
+## Done
+- [x] Hub identity: Dashboard-only `main`, `v1/`/`v2/` as committed source trees, single clone (#21, #22)
+- [x] `Compare: v1 + v2 + Dashboard` VS Code compound works end-to-end
 - [x] Dashboard `appsettings.json` maps project names to URLs
-- [x] CI gates on `main` (format + build + test)
+- [x] CI gates `main` on format + build + test
 - [x] v1 source committed and runnable (`v1/`)
-- [x] v2 source committed and runnable (`v2/`)
-- [ ] One signed release tag (`v1.0.0`) on `main` after the smoke test
-- [ ] README walks a first-time cloner through to a green Compare run
-- [ ] Dashboard surfaces a "diff summary" badge so reviewers see the v1 -> v2 delta at a glance
-
-## Milestones to v1
-
-### M1. Smoke test the Compare flow on a clean machine (S)
-
-- [ ] Fresh clone into a scratch directory and run the Compare compound
-- [ ] Confirm v1 binds `:5000`, v2 binds `:5001`, Dashboard binds `:5100`
-- [ ] Run each benchmark (`add-funds`, `deduct-funds`, `get-balance`) and confirm side-by-side cards render
-- [ ] Capture a screenshot for the README
-
-**Acceptance:** zero manual steps beyond `git clone`, `dotnet run --project src/GrainWallet.Dashboard`, and the per-version AppHost launch.
-
-### M2. Reviewer-facing diff badge (M)
-
-- [ ] Add a "v1 vs v2 delta" tile that highlights p95 / p99 deltas as `+X% faster` / `-X% slower`
-- [ ] Compute deltas from in-memory `NodeStats` so it doesn't depend on disk reports
-- [ ] Surface the back-pressure 503 rate per project (v2's gate is invisible today)
-
-**Acceptance:** a reviewer can open the dashboard, click Run, and articulate v2's wins without reading numbers manually.
-
-### M3. Tag and document v1.0.0 (S)
-
-- [ ] Bump the Dashboard `csproj` to a 1.0.0 marker (informational)
-- [ ] Push tag `v1.0.0` after manual smoke test passes
-- [ ] README links to the tagged release
-
-**Acceptance:** `git tag --list` shows `v1.0.0` on the smoke-tested commit.
-
-## Beyond v1 (post-1.0 polish)
-
-- Adding v3 as a worktree pattern (`git worktree add v3 v3`) once a v3 branch exists
-- Charts in the Dashboard (per-scenario latency lines over benchmark history)
-- Dashboard config UI for adjusting bench knobs without restarting
-- Per-version `README.md` linkbacks from the hub README
-
-## Out of scope for v1
-
-- Production hosting of the AppHosts (Aspire is dev-only by design)
-- Multi-region or distributed Orleans clusters (each version stays single-silo)
-- Anything that requires changes inside `v1/` or `v2/` source - versions stay frozen at their snapshot SHA
+- [x] v2 source committed and runnable (`v2/`): hardened outbox, back-pressure gate, schema fixes, event rename (#28)
