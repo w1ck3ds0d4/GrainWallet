@@ -70,12 +70,6 @@ jobs:
     steps:
       - id: meta
         uses: dependabot/fetch-metadata@v2
-      - name: Wait for required checks to report
-        if: steps.meta.outputs.update-type == 'version-update:semver-patch'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
-        run: gh pr checks "$PR_URL" --required --watch --interval 20
       - name: Merge when every update in the PR is a patch
         if: steps.meta.outputs.update-type == 'version-update:semver-patch'
         env:
@@ -85,4 +79,22 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           t="${PR_TITLE#chore: }"
-          gh pr merge "$PR_URL" --squash --subject "(chore) ${t,,} (#$PR_NUMBER)" --body ""
+          subject="(chore) ${t,,} (#$PR_NUMBER)"
+          # needs: [gates] already guarantees the required check finished before this
+          # job started, but GitHub's merge-eligibility state (used by the mergePullRequest
+          # GraphQL call inside `gh pr merge`) lags the check's own completion by a few
+          # minutes (eventual consistency), so the first merge attempt can still fail with
+          # "Required status check ... is expected." Retry the merge itself with backoff
+          # instead of polling the check again, since the check has already reported.
+          max_attempts=6
+          delay=15
+          attempt=1
+          until gh pr merge "$PR_URL" --squash --subject "$subject" --body ""; do
+            if [ "$attempt" -ge "$max_attempts" ]; then
+              echo "gh pr merge still failing after $attempt attempts, giving up" >&2
+              exit 1
+            fi
+            echo "merge attempt $attempt failed, GitHub's merge-eligibility state may still be settling, retrying in ${delay}s" >&2
+            sleep "$delay"
+            attempt=$((attempt + 1))
+          done
