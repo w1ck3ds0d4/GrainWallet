@@ -10,7 +10,7 @@
     <PackageReference Include="Aspire.Confluent.Kafka" Version="13.3.5" />
     <PackageReference Include="Aspire.Npgsql" Version="13.3.5" />
     <PackageReference Include="Confluent.Kafka" Version="2.13.2" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.13" />
     <PackageReference Include="Microsoft.Orleans.Persistence.AdoNet" Version="10.1.0" />
     <PackageReference Include="Microsoft.Orleans.Clustering.AdoNet" Version="10.1.0" />
     <PackageReference Include="Microsoft.Orleans.Server" Version="10.1.0" />
