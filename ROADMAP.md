@@ -7,7 +7,7 @@ NBomber dashboard) built as an interview/portfolio artifact, not a live product.
 tagged, documented `v1.0.0` that a stranger can clone and run in one sitting, after which it moves
 to maintain.
 
-> How this file is used: Claude Project threads build the first unticked item under **Now**, one item per branch and pull request, and tick it in that same PR as `- [x] ... (#PR)`. Daniel owns the order and the lists; threads never add to Now, Next or Later themselves, they propose under **Ideas**.
+> How this file is used: Claude Project threads build the first unticked item under **Now**, one item per branch and pull request, and tick it in that same PR as `- [x] ... (#PR)`. The maintainer owns the order and the lists; threads never add to Now, Next or Later themselves, they propose under **Ideas**.
 
 ## Now (path to v1.0.0)
 - [ ] **Smoke test the Compare flow on a clean machine**: fresh clone into a scratch directory, run the `Compare: v1 + v2 + Dashboard` compound, confirm v1 binds `:5000`, v2 binds `:5001`, Dashboard binds `:5100`, and each benchmark (`add-funds`, `deduct-funds`, `get-balance`) renders side-by-side cards. Done when: zero manual steps beyond `git clone` and the compound launch, and a screenshot is captured for the README.
