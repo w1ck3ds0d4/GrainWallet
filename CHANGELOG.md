@@ -6,6 +6,8 @@ All notable changes to this project are documented here. Format loosely follows
 ## [Unreleased]
 - Reviewer-facing v1 vs v2 diff badge on the Dashboard.
 - First-time-cloner README walkthrough with a captured screenshot.
+- CI calls the SecureCheck reusable workflow from the wickitlab organization.
+- Documented the Dashboard bench result and run-status types.
 
 ## v2 hardening (2026, merged to main)
 - Rename PlayerWallet to GrainWallet and patch a MessagePack CVE (#28).
